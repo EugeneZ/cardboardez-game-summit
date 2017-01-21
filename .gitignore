@@ -1,0 +1,8 @@
+.DS_Store
+.buildpath
+.classpath
+.idea
+.project
+.settings
+cardboardez-game-summit.iml
+/node_modules

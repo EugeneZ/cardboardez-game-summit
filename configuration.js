@@ -1,3 +1,5 @@
+import roles from './client/roles';
+
 export function getConfiguration(options = {}, players) {
     const totalRoles = roles.reduce((value, role) => {
             if (options[role.name]) {

@@ -203,14 +203,14 @@ export default class PlayArea extends Component {
             if (!game.winners.length) {
                 instructions += `No one won! `;
             } else {
-                const winnersNames = game.winners.map(winnerId => game.players.find(player => player.id === winnerId).name);
+                const winnersNames = game.winners.map(winnerId => game._players.find(player => player.id === winnerId).name);
                 instructions += `${winnersNames.join(', ')} won! `;
             }
 
             if (!game.deadPlayers.length) {
                 instructions += `No one died! `;
             } else {
-                const deadPlayersNames = game.deadPlayers.map(player => game.players.find(p => p.id === player.id).name);
+                const deadPlayersNames = game.deadPlayers.map(player => game._players.find(p => p.id === player.id).name);
                 instructions += `${deadPlayersNames.join(', ')} died. `;
             }
 

@@ -43,17 +43,18 @@ export default class Board extends Component {
     }
 
     render() {
+        const { game, me, players, onClickCard } = this.props;
         return (
             <div style={styles.container}>
                 <div style={styles.board}>
-                    {this.props.players.map((player, i) => {
-                        const isSelf = this.props.me.id === player.id;
+                    {players.map((player, i) => {
+                        const isSelf = me.id === player.id;
                         return <Player
                             key={i}
-                            onClick={() => this.props.onClickCard(player.id)}
+                            onClick={() => onClickCard(player.id)}
                             name={isSelf ? 'You' : player.name}
-                            role={player.role ? player.role : isSelf ? player._private.role : this.props.me._private.peeked[player.id]}
-                            known={this.props.me._private.knows.includes(player.id)}
+                            role={player.role || me._private.peeked[player.id] || (isSelf && player._private.role)}
+                            known={me._private.knows.includes(player.id)}
                             shield={player.shield}
                             artifact={isSelf ? player._private.artifact : player.artifact}
                             style={this.playerStyles[i]}
@@ -61,12 +62,13 @@ export default class Board extends Component {
                     })}
                 </div>
                 <div style={styles.centerWrapper}>
-                    {times(this.props.game.centerCount, i => {
+                    {times(game.centerCount, i => {
                         let name = i === 0 ? "Left" : i === 1 ? "Center" : i === 2 ? "Right" : "Alpha Wolf's";
                         return <Player
-                            onClick={() => this.props.onClickCard(i)}
+                            key={i}
+                            onClick={() => onClickCard(i)}
                             name={name}
-                            role={this.props.me._private.peeked[i]}
+                            role={me._private.peeked[i]}
                             style={{ marginBottom: 10 }}
                         />;
                     })}

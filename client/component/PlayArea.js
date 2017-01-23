@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import autobind from 'autobind-decorator';
 import times from 'lodash/times';
 import random from 'lodash/random';
@@ -12,7 +11,6 @@ import moment from 'moment';
 import Board from './Board';
 import Info from './Info';
 import roles from '../roles';
-import { game as gameSelector, players as playersSelector, me as meSelector } from '../selectors';
 
 const styles = {
     wrapper: {
@@ -144,18 +142,13 @@ export default class PlayArea extends Component {
     state = {
         tab: 0,
         currentTarget: null,
-        readyAt: moment().add(random(5, 10), 's').valueOf()
+        readyAt: moment().add(random(5, 10), 's').valueOf(),
     };
 
-    componentWillMount() {
-        this.game = gameSelector(this.props);
-        this.players = playersSelector(this.props);
-        this.me = meSelector(this.props);
-    }
-
     componentDidMount() {
-        this.timer = setInterval(() => this.forceUpdate(), 500);
-        this.node = ReactDOM.findDOMNode(this);
+        if (!this.props.me.ready) {
+            this.timer = setInterval(() => this.forceUpdate(), 500);
+        }
         window.addEventListener('resize', this.resizeToFit);
         this.resizeToFit();
         this.calculateRoles();
@@ -166,37 +159,24 @@ export default class PlayArea extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const newGame = gameSelector(nextProps);
-        const newPlayers = playersSelector(nextProps);
-        const newMe = meSelector(nextProps);
+        const { me } = this.props;
 
-        if (newMe && this.me && !newMe.ready && this.me.ready) {
+        if (me.ready && !nextProps.me.ready) {
             this.setState({
                 readyAt: moment().add(random(1, 5), 's').valueOf()
             });
             this.timer = setInterval(() => this.forceUpdate(), 500);
-        } else if (newMe && this.me && newMe.ready && !this.me.ready) {
+        } else if (!me.ready && nextProps.me.ready) {
             clearInterval(this.timer);
         }
-
-        this.game = newGame;
-        this.players = newPlayers;
-        this.me = newMe;
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate() {
         this.resizeToFit();
-        if (this.props.params.id !== prevProps.params.id || this.props.games !== prevProps.games) {
-            this.calculateRoles();
-        }
     }
 
     render() {
-        if (!this.props.user || !this.props.user.id) {
-            return null;
-        }
-
-        const { game, players, me } = this;
+        const { game, me } = this.props;
 
         const progress = (game.order.indexOf(game.mode) + 1 / game.order.length) * 100;
 
@@ -223,14 +203,14 @@ export default class PlayArea extends Component {
             if (!game.winners.length) {
                 instructions += `No one won! `;
             } else {
-                const winnersNames = game.winners.map(winnerId => players.find(player => player.id === winnerId).name);
+                const winnersNames = game.winners.map(winnerId => game.players.find(player => player.id === winnerId).name);
                 instructions += `${winnersNames.join(', ')} won! `;
             }
 
             if (!game.deadPlayers.length) {
                 instructions += `No one died! `;
             } else {
-                const deadPlayersNames = game.deadPlayers.map(player => players.find(p => p.id === player.id).name);
+                const deadPlayersNames = game.deadPlayers.map(player => game.players.find(p => p.id === player.id).name);
                 instructions += `${deadPlayersNames.join(', ')} died. `;
             }
 
@@ -240,7 +220,7 @@ export default class PlayArea extends Component {
             actionNeeded = roleDetails[submode].actionNeeded;
         }
 
-        let main = <Board players={players} game={game} me={me}
+        let main = <Board players={game._players} game={game} me={me}
                           onClickCard={this.onClickCard.bind(this, actionNeeded)}/>;
         if (this.state.tab === 1) {
             main = <Info roles={this.roles} order={game.order.filter(
@@ -278,7 +258,7 @@ export default class PlayArea extends Component {
             ];
 
         return (
-            <div>
+            <div ref={node => this.node = node}>
                 <div style={styles.wrapper}>
                     <LinearProgress mode="determinate" value={progress}/>
                     <Paper zDepth={4} style={{ ...styles.instructions, ...color }}>
@@ -341,17 +321,13 @@ export default class PlayArea extends Component {
     }
 
     resizeToFit() {
-        if (!this.node) {
-            return;
+        if (this.node) {
+            this.node.style.height = (window.innerHeight - 110) + "px";
         }
-        this.node.style.height = (window.innerHeight - 110) + "px";
     }
 
     calculateRoles() {
-        const game = this.props.games.find(game => game.id === this.props.params.id);
-        if (!game) {
-            return;
-        }
+        const { game } = this.props;
 
         this.roles = roles.filter(role => game.options[role.name]);
 

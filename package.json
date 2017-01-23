@@ -2,7 +2,7 @@
   "name": "cardboardez-game-summit",
   "description": "CardboardEZ module for summit, a game similar to Werewolf.",
   "author": "Eugene Zaretskiy",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "./server.js",
   "scripts": {
     "test": "tape -r babel-register \"test/unit/**/*.js\""

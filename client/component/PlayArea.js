@@ -10,7 +10,7 @@ import { FlatButton } from 'material-ui';
 import moment from 'moment';
 import Board from './Board';
 import Info from './Info';
-import roles from '../roles';
+import roles from '../../roles';
 
 const styles = {
     wrapper: {

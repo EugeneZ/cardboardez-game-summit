@@ -8,7 +8,7 @@
 
 const _ = require('lodash');
 const moment = require('moment');
-const roles = require('./client/roles');
+const roles = require('./roles');
 
 const CENTER_WEREWOLF = 3;
 const WEREWOLF_ROLES_THAT_ARE_KNOWN = ['werewolf', 'alphaWolf', 'mysticWolf', 'dreamWolf'];

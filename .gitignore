@@ -5,4 +5,5 @@
 .project
 .settings
 cardboardez-game-summit.iml
+/dist
 /node_modules

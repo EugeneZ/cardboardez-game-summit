@@ -1,6 +1,6 @@
-import roles from './client/roles';
+const roles = require('./roles');
 
-export function getConfiguration(options = {}, players) {
+module.exports.getConfiguration = function getConfiguration(options = {}, players) {
     const totalRoles = roles.reduce((value, role) => {
             if (options[role.name]) {
                 return ++value;
@@ -67,4 +67,4 @@ export function getConfiguration(options = {}, players) {
             }]
         }].concat(roles)
     }
-}
+};

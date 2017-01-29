@@ -7,6 +7,7 @@
   "scripts": {
     "build": "browserify -r ./client/client:cardboardez-game-summit-client -x react -x react-dom -x material-ui -t babelify -o dist/client.js",
     "prepublish": "npm run build",
+    "watchify": "watchify -r ./client/client:cardboardez-game-summit-client -x react -x react-dom -x material-ui -t babelify -o dist/client.js",
     "test": "tape -r babel-register \"test/unit/**/*.js\""
   },
   "peerDependencies": {

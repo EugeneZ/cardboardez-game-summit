@@ -121,7 +121,7 @@ module.exports = [
         name: 'paranormalInvestigator',
         label: 'Paranormal Investigator',
         type: 'boolean',
-        description: `PI may look at up to two other players' cards. If the PI sees a Tanner or a Werewolf of any type,
+        description: `PI may look at up to two other players' cards. If the PI sees a Tanner or a Werewolf card,
         PI stops looking at cards and becomes a tanner or werewolf respectively.`,
         wake: 53
     },
